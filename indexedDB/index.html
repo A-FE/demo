@@ -14,30 +14,35 @@
     <meta name="viewport"
           content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no"/>
     <meta name="baidu-site-verification" content="v3r4JDDzPy"/>
-    <script src="//cdn.bootcss.com/vue/2.2.1/vue.js"></script>
+    <script src="https://cdn.bootcss.com/vue/2.4.2/vue.min.js"></script>
     <style>
-        body{ padding: 30px; }
+        body { padding: 30px; }
 
-        h3{text-align: center;margin-bottom: 40px;}
-        [class^=column_]{ text-align: center; line-height: 1.6; }
-        .column_1{  width: 100px;  }
-        .column_2 {  width: 100px;  }
-        .column_3{min-width:150px;max-width: 300px;padding: 5px 15px;}
-        .table {  margin-top: 20px;  }
+        h3 { text-align: center; margin-bottom: 40px; }
 
-        input{ /*-webkit-appearance: none;*/ background-image: none; outline: none; border-radius: 4px; border: 1px solid #bfcbd9; padding: 3px 10px; height: 36px; box-sizing: border-box; vertical-align: middle; }
+        [class^=column_] { text-align: center; line-height: 1.6; }
 
-        .button{ display: inline-block; background-color: #20a0ff; color: #fff; padding: 3px 15px; height: 36px; }
+        .column_1 { width: 100px; }
 
-        .button:hover{ background-color: #4db3ff;; }
+        .column_2 { width: 100px; }
 
-        .button:active{ background-color: #1d90e6; }
+        .column_3 { min-width: 150px; max-width: 300px; padding: 5px 15px; }
 
-        .text-link{ color: #20a0ff; cursor: pointer; }
+        .table { margin-top: 20px; }
 
-        .text-link:hover{ color: #4db3ff; }
+        input { /*-webkit-appearance: none;*/ background-image: none; outline: none; border-radius: 4px; border: 1px solid #bfcbd9; padding: 3px 10px; height: 36px; box-sizing: border-box; vertical-align: middle; }
 
-        .text-link:active{ color: #1d90e6; }
+        .button { display: inline-block; background-color: #20a0ff; color: #fff; padding: 3px 15px; height: 36px; }
+
+        .button:hover { background-color: #4db3ff;; }
+
+        .button:active { background-color: #1d90e6; }
+
+        .text-link { color: #20a0ff; cursor: pointer; }
+
+        .text-link:hover { color: #4db3ff; }
+
+        .text-link:active { color: #1d90e6; }
     </style>
 </head>
 <body>
@@ -61,7 +66,7 @@
         <tbody>
         <tr v-for="item in dataList" :data-id="item.id" :data-data="JSON.stringify(item)">
             <td class="column_0" data-key="id">{{item.id}}</td>
-            <td class="column_1" data-key="name"  contenteditable @focusout="handleEdit">{{item.name}}</td>
+            <td class="column_1" data-key="name" contenteditable @focusout="handleEdit">{{item.name}}</td>
             <td class="column_2" data-key="qq" contenteditable @focusout="handleEdit">{{item.qq}}</td>
             <td class="column_3" data-key="remark" contenteditable @focusout="handleEdit">{{item.remark}}</td>
             <td class="column_4 text-link" @click="handleDelete(item.id)">删除</td>
@@ -77,16 +82,23 @@
             dbName: 'myDB',
             version: '1',
             // 数据库打开成功时调用
-            success(data) { },
+            success(data) {
+            },
             // 数据库打开失败时调用
-            error(msg) { },
+            error(msg) {
+            },
             // 数据库版本更新时调用
-            upgradeneeded(){ }
+            upgradeneeded(){
+            }
         }
 
         Object.assign(this.option, option);
+
+        console.log('IDBFactory对象', window.indexedDB);
+
         // 打开数据库
         this.DBopenRequest = window.indexedDB.open(this.option.dbName, this.option.version);
+        console.log('IDBOpenDBRequest请求对象', this.DBopenRequest);
 
         // 如果数据库打开失败
         this.DBopenRequest.onerror = () => {
@@ -96,12 +108,11 @@
         // 数据库打开成功
         this.DBopenRequest.onsuccess = () => {
             this.db = this.DBopenRequest.result;
-            this.get( (data)=>{
-                this.option.success(data);
-            })
+            console.log('IDBDatabase数据库对象', this.db);
+            this.option.success();
         }
 
-        this.DBopenRequest.onupgradeneeded = ()=>{
+        this.DBopenRequest.onupgradeneeded = () => {
             console.log('数据库更新');
 
             var db = event.target.result;
@@ -114,17 +125,22 @@
                 autoIncrement: true
             });
             // 定义存储的数据项
-            objectStore.createIndex('id','id',{unique: true});
-            objectStore.createIndex('name','name');
-            objectStore.createIndex('qq','qq');
-            objectStore.createIndex('remark','remark');
+            objectStore.createIndex('id', 'id', {unique: true});
+            objectStore.createIndex('name', 'name');
+            objectStore.createIndex('qq', 'qq');
+            objectStore.createIndex('remark', 'remark');
             this.option.upgradeneeded();
         }
 
         var methods = {
             // 增
             add(newItem, callBack){
-                var objectStore = this.db.transaction(this.option.dbName, 'readwrite').objectStore(this.option.dbName);
+                var transaction = this.db.transaction(this.option.dbName, 'readwrite');
+                console.log('IDBTransaction数据库事物管理对象',transaction);
+
+                var objectStore = transaction.objectStore(this.option.dbName);
+                console.log('IDBObjectStore数据库表',objectStore);
+
                 objectStore.add(newItem).onsuccess = (event) => {
                     newItem.id = event.target.result;
                     callBack && callBack(newItem);
@@ -151,10 +167,11 @@
                 var data = [];
                 objectStore.openCursor().onsuccess = (event) => {
                     var cursor = event.target.result;
-                    if(cursor){
+                    console.log('IDBCursorWithValue游标对象',cursor);
+                    if (cursor) {
                         data.push(cursor.value);
                         cursor.continue();
-                    }else {
+                    } else {
                         callBack && callBack(data)
                     }
                 }
@@ -196,7 +213,7 @@
             // 添加
             handleClickAdd(){
                 if (this.checkForm()) {
-                    this.myIndexedDB.add(Object.assign({},this.form), () => {
+                    this.myIndexedDB.add(Object.assign({}, this.form), () => {
                         console.log('添加成功');
                         this.getData();
                     })
@@ -209,22 +226,22 @@
                 var value = target.innerText || target.textContent || '';
                 var key = target.getAttribute('data-key');
                 item[key] = value;
-                this.myIndexedDB.edit(item, ()=>{
+                this.myIndexedDB.edit(item, () => {
                     console.log('编辑成功');
                     this.getData();
                 });
             },
             // 删除
             handleDelete(id){
-                this.myIndexedDB.del(id, ()=>{
+                this.myIndexedDB.del(id, () => {
                     console.log('删除成功');
                     this.getData();
                 })
             },
             // 查询
             getData(){
-                this.myIndexedDB.get((data)=>{
-                    if(Array.isArray(data)){
+                this.myIndexedDB.get((data) => {
+                    if (Array.isArray(data)) {
                         this.dataList = data;
                     }
                 })
