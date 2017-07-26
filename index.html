@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no">
-    <title>我的demo</title>
+    <title>demo列表</title>
     <meta http-equiv="X-UA-Compatible" content="IE=Edge">
     <meta http-equiv="Cache-Control" content="no-siteapp">
     <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate"/>
@@ -14,21 +14,35 @@
     <meta name="viewport"
           content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no"/>
     <meta name="baidu-site-verification" content="v3r4JDDzPy"/>
-    <script src="//cdn.bootcss.com/vue/2.2.1/vue.js"></script>
+    <script src="https://cdn.bootcss.com/vue/2.4.2/vue.min.js"></script>
+    <link href="https://cdn.bootcss.com/element-ui/1.4.0/theme-default/index.css" rel="stylesheet">
+    <script src="https://cdn.bootcss.com/element-ui/1.4.0/index.js"></script>
+    <style>
+        .block{display: block;}
+        a{text-decoration: none;}
+        .m-link{ color: #20a0ff; }
+        .m-link:hover{ color: #4db3ff; }
+        .m-link:active{ color: #1d90e6; }
+        iframe{border: none;background-image: none;}
+        .demo-wrap{
+            padding: 30px;
+        }
+    </style>
 </head>
 <body>
 <div id="app">
-    <a href="./indexedDB/index.html">前端数据库indexedDB实例</a>
+    <div class="demo-wrap">
+        <iframe src="./indexedDB/index.html" width="800" height="500"></iframe>
+    </div>
+
+    <div class="demo-wrap">
+        <iframe src="./css/loading/dot.html" width="800" height="80"></iframe>
+    </div>
+
+    <div class="demo-wrap">
+        <iframe src="./clipboard/clipboard.html" width="800" height="400"></iframe>
+    </div>
 </div>
-<script>
-    var vm = new Vue({
-        el: '#app',
-        data(){
-            return {}
-        },
-        watch: {},
-        methods: {}
-    })
-</script>
+
 </body>
 </html>

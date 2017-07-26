@@ -6,21 +6,27 @@
     <title>js复制到剪贴板</title>
     <script src="https://cdn.bootcss.com/clipboard.js/1.7.1/clipboard.js"></script>
     <script src="//cdn.bootcss.com/vue/2.2.1/vue.js"></script>
+    <style>
+        .m-link{ color: #20a0ff; cursor: pointer;line-height: 1.6;}
+        .m-link:hover{ color: #4db3ff; }
+        .m-link:active{ color: #1d90e6; }
+        input,textarea {  background-image: none; outline: none; border-radius: 4px; border: 1px solid #bfcbd9; padding: 3px 10px; height: 36px; box-sizing: border-box; vertical-align: middle; }
+        h3{    text-align: center;
+            margin-bottom: 40px;}
+    </style>
 </head>
 <body>
 <div id="app">
-    <hr>
-    <h2>利用clipboard插件实现剪贴板功能</h2>
+    <h3>js实现复制粘贴</h3>
     <div>
-        <h3>复制某个输入/文本框的内容到剪贴板</h3>
-        <input id="input" type="textarea" value="啦啦啦,啦啦啦,我是卖报的小行家">
-        <button class="btn" data-clipboard-target="input">复制</button>
-        <button class="btn" data-clipboard-action="cut" data-clipboard-target="input">剪切</button>
+        <input id="input" type="textarea" value="啦啦啦,啦啦啦,我是卖报的小行家" style="width: 300px;">
+        <a class="btn m-link" data-clipboard-target="input">复制</a>
+        <a class="btn m-link" data-clipboard-action="cut" data-clipboard-target="input">剪切</a>
     </div>
 
-    <div>
-        <h3>复制指定文字内容到剪贴板</h3>
-        <button class="btn" data-clipboard-target="input" data-clipboard-text="鸡鸡鸡，陈yan开飞机">复制</button>
+    <div style="margin-top: 20px;">
+        <a class="btn m-link" data-clipboard-target="input" data-clipboard-text="鸡鸡鸡，陈yan开飞机">复制指定文字内容到剪贴板</a>
+        <textarea name="" id="" cols="30" rows="3" style="display: block;" placeholder="在这里粘贴"></textarea>
     </div>
     </div>
 <script>
