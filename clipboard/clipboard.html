@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no">
+    <title>js复制到剪贴板</title>
+    <script src="https://cdn.bootcss.com/clipboard.js/1.7.1/clipboard.js"></script>
+    <script src="//cdn.bootcss.com/vue/2.2.1/vue.js"></script>
+</head>
+<body>
+<div id="app">
+    <hr>
+    <h2>利用clipboard插件实现剪贴板功能</h2>
+    <div>
+        <h3>复制某个输入/文本框的内容到剪贴板</h3>
+        <input id="input" type="textarea" value="啦啦啦,啦啦啦,我是卖报的小行家">
+        <button class="btn" data-clipboard-target="input">复制</button>
+        <button class="btn" data-clipboard-action="cut" data-clipboard-target="input">剪切</button>
+    </div>
+
+    <div>
+        <h3>复制指定文字内容到剪贴板</h3>
+        <button class="btn" data-clipboard-target="input" data-clipboard-text="鸡鸡鸡，陈yan开飞机">复制</button>
+    </div>
+    </div>
+<script>
+   var clipboard = new Clipboard('.btn');
+   clipboard.on('success', function (e) {
+       console.log('复制成功',e.text);
+       e.clearSelection();
+   })
+
+    clipboard.on('error', function (e) {
+        console.error('复制出错');
+    })
+</script>
+</body>
+</html>

@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no">
+    <title>Snap()</title>
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge">
+    <meta http-equiv="Cache-Control" content="no-siteapp">
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate"/>
+    <meta http-equiv="Pragma" content="no-cache"/>
+    <meta http-equiv="Expires" content="0"/>
+    <meta name="renderer" content="webkit|ie-comp|ie-stand">
+    <meta content="telephone=no" name="format-detection"/>
+    <meta name="viewport"
+          content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no"/>
+    <meta name="baidu-site-verification" content="v3r4JDDzPy"/>
+    <script src="https://cdn.bootcss.com/snap.svg/0.5.1/snap.svg-min.js"></script>
+    <script src="//cdn.bootcss.com/vue/2.2.1/vue.js"></script>
+</head>
+<body>
+<div id="app">
+<p></p>
+</div>
+<script>
+    // 绘制一个面或者包裹一个已经存在的SVG元素
+    var svg = Snap(100,100);
+    // 绘制一个中心点(50,50),半径是40的一个圆
+    svg.paper.circle(50,50,40);
+    document.getElementById("app").appendChild(svg.node);
+</script>
+</body>
+</html>

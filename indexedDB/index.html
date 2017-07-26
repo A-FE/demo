@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no">
+    <title>前端数据库indexedDB实例</title>
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge">
+    <meta http-equiv="Cache-Control" content="no-siteapp">
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate"/>
+    <meta http-equiv="Pragma" content="no-cache"/>
+    <meta http-equiv="Expires" content="0"/>
+    <meta name="renderer" content="webkit|ie-comp|ie-stand">
+    <meta content="telephone=no" name="format-detection"/>
+    <meta name="viewport"
+          content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no"/>
+    <meta name="baidu-site-verification" content="v3r4JDDzPy"/>
+    <script src="//cdn.bootcss.com/vue/2.2.1/vue.js"></script>
+    <style>
+        body{ padding: 30px; }
+
+        h3{text-align: center;margin-bottom: 40px;}
+        [class^=column_]{ text-align: center; line-height: 1.6; }
+        .column_1{  width: 100px;  }
+        .column_2 {  width: 100px;  }
+        .column_3{min-width:150px;max-width: 300px;padding: 5px 15px;}
+        .table {  margin-top: 20px;  }
+
+        input{ /*-webkit-appearance: none;*/ background-image: none; outline: none; border-radius: 4px; border: 1px solid #bfcbd9; padding: 3px 10px; height: 36px; box-sizing: border-box; vertical-align: middle; }
+
+        .button{ display: inline-block; background-color: #20a0ff; color: #fff; padding: 3px 15px; height: 36px; }
+
+        .button:hover{ background-color: #4db3ff;; }
+
+        .button:active{ background-color: #1d90e6; }
+
+        .text-link{ color: #20a0ff; cursor: pointer; }
+
+        .text-link:hover{ color: #4db3ff; }
+
+        .text-link:active{ color: #1d90e6; }
+    </style>
+</head>
+<body>
+<h3>前端数据库indexedDB实例</h3>
+<div id="app">
+    <form id="form" action="" onsubmit="return false">
+        <input v-model="form.name" type="text" placeholder="姓名">
+        <input v-model="form.qq" type="text" placeholder="QQ号">
+        <input v-model="form.remark" type="text" placeholder="公司名">
+        <input class="button" type="submit" value="添加" @click="handleClickAdd">
+    </form>
+
+    <table id="table" class="table">
+        <thead>
+        <th class="column_0">ID</th>
+        <th class="column_1">姓名</th>
+        <th class="column_2">QQ</th>
+        <th class="column_3">备注</th>
+        <th class="column_4">操作</th>
+        </thead>
+        <tbody>
+        <tr v-for="item in dataList" :data-id="item.id" :data-data="JSON.stringify(item)">
+            <td class="column_0" data-key="id">{{item.id}}</td>
+            <td class="column_1" data-key="name"  contenteditable @focusout="handleEdit">{{item.name}}</td>
+            <td class="column_2" data-key="qq" contenteditable @focusout="handleEdit">{{item.qq}}</td>
+            <td class="column_3" data-key="remark" contenteditable @focusout="handleEdit">{{item.remark}}</td>
+            <td class="column_4 text-link" @click="handleDelete(item.id)">删除</td>
+        </tr>
+        </tbody>
+    </table>
+
+</div>
+<script>
+    function MyIndexedDB(option) {
+
+        this.option = {
+            dbName: 'myDB',
+            version: '1',
+            // 数据库打开成功时调用
+            success(data) { },
+            // 数据库打开失败时调用
+            error(msg) { },
+            // 数据库版本更新时调用
+            upgradeneeded(){ }
+        }
+
+        Object.assign(this.option, option);
+        // 打开数据库
+        this.DBopenRequest = window.indexedDB.open(this.option.dbName, this.option.version);
+
+        // 如果数据库打开失败
+        this.DBopenRequest.onerror = () => {
+            this.option.error('数据库打开失败');
+        }
+
+        // 数据库打开成功
+        this.DBopenRequest.onsuccess = () => {
+            this.db = this.DBopenRequest.result;
+            this.get( (data)=>{
+                this.option.success(data);
+            })
+        }
+
+        this.DBopenRequest.onupgradeneeded = ()=>{
+            console.log('数据库更新');
+
+            var db = event.target.result;
+            db.onerror = () => {
+                this.option.error('数据库打开失败');
+            }
+            // 创建一个数据库存储对象
+            var objectStore = db.createObjectStore(this.option.dbName, {
+                keyPath: 'id',
+                autoIncrement: true
+            });
+            // 定义存储的数据项
+            objectStore.createIndex('id','id',{unique: true});
+            objectStore.createIndex('name','name');
+            objectStore.createIndex('qq','qq');
+            objectStore.createIndex('remark','remark');
+            this.option.upgradeneeded();
+        }
+
+        var methods = {
+            // 增
+            add(newItem, callBack){
+                var objectStore = this.db.transaction(this.option.dbName, 'readwrite').objectStore(this.option.dbName);
+                objectStore.add(newItem).onsuccess = (event) => {
+                    newItem.id = event.target.result;
+                    callBack && callBack(newItem);
+                }
+            },
+            // 改
+            edit(data, callBack){
+                var objectStore = this.db.transaction(this.option.dbName, 'readwrite').objectStore(this.option.dbName);
+                var objectStorePutRequest = objectStore.put(data);
+                objectStorePutRequest.onsuccess = function () {
+                    callBack && callBack();
+                }
+            },
+            // 删
+            del(id, callBack){
+                var objectStore = this.db.transaction(this.option.dbName, 'readwrite').objectStore(this.option.dbName);
+                objectStore.delete(id).onsuccess = () => {
+                    callBack && callBack();
+                }
+            },
+            // 查
+            get(callBack){
+                var objectStore = this.db.transaction(this.option.dbName).objectStore(this.option.dbName);
+                var data = [];
+                objectStore.openCursor().onsuccess = (event) => {
+                    var cursor = event.target.result;
+                    if(cursor){
+                        data.push(cursor.value);
+                        cursor.continue();
+                    }else {
+                        callBack && callBack(data)
+                    }
+                }
+            }
+        }
+
+        Object.assign(MyIndexedDB.prototype, methods);
+    }
+
+
+    var vm = new Vue({
+        el: '#app',
+        data(){
+            return {
+                dataList: [],
+                form: {
+                    name: '彭小牛',
+                    qq: '1024371442',
+                    remark: '会找房'
+                },
+                myIndexedDB: null
+            }
+        },
+        watch: {},
+        methods: {
+            // 表单验证
+            checkForm(){
+                let form = this.form;
+                if (form.name === '') {
+                    alert('请输入姓名')
+                    return false
+                } else if (!/\d{4,15}/.test(form.qq)) {
+                    alert('请输入正确的手机号')
+                    return false
+                } else {
+                    return true
+                }
+            },
+            // 添加
+            handleClickAdd(){
+                if (this.checkForm()) {
+                    this.myIndexedDB.add(Object.assign({},this.form), () => {
+                        console.log('添加成功');
+                        this.getData();
+                    })
+                }
+            },
+            // 编辑
+            handleEdit(e){
+                var target = e.target;
+                var item = JSON.parse(target.parentNode.getAttribute('data-data'));
+                var value = target.innerText || target.textContent || '';
+                var key = target.getAttribute('data-key');
+                item[key] = value;
+                this.myIndexedDB.edit(item, ()=>{
+                    console.log('编辑成功');
+                    this.getData();
+                });
+            },
+            // 删除
+            handleDelete(id){
+                this.myIndexedDB.del(id, ()=>{
+                    console.log('删除成功');
+                    this.getData();
+                })
+            },
+            // 查询
+            getData(){
+                this.myIndexedDB.get((data)=>{
+                    if(Array.isArray(data)){
+                        this.dataList = data;
+                    }
+                })
+            }
+        },
+        created: function () {
+            this.myIndexedDB = new MyIndexedDB({
+                dbName: 'myIndexedDB1',
+                version: '1',
+                success(){
+                    vm.getData();
+                },
+                error(err){
+                    console.log(err);
+                }
+            })
+        }
+    })
+</script>
+</body>
+</html>

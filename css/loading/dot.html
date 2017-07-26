@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no">
+    <title>纯css实现点点点加载loading</title>
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge">
+    <meta http-equiv="Cache-Control" content="no-siteapp">
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate"/>
+    <meta http-equiv="Pragma" content="no-cache"/>
+    <meta http-equiv="Expires" content="0"/>
+    <meta name="renderer" content="webkit|ie-comp|ie-stand">
+    <meta content="telephone=no" name="format-detection"/>
+    <meta name="viewport"
+          content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no"/>
+    <meta name="baidu-site-verification" content="v3r4JDDzPy"/>
+    <script src="http://localhost:8081/target/target-script-min.js#anonymous"></script>
+    <style>
+        dot {
+            display: inline-block;
+            height: 1em; line-height: 1;
+            text-align: left;
+            vertical-align: -.25em;
+            overflow: hidden;
+        }
+        dot::before {
+            display: block;
+            content: '...\A..\A.';
+            white-space: pre-wrap;   /* 也可以是white-space: pre */
+            animation: dot 3s infinite step-start both;
+        }
+        @keyframes dot {
+            33% { transform: translateY(-2em); }
+            66% { transform: translateY(-1em); }
+        }
+    </style>
+</head>
+<body>
+    <dot></dot>
+<script>
+</script>
+</body>
+</html>
