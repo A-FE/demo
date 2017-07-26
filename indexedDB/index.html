@@ -112,6 +112,7 @@
             this.option.success();
         }
 
+        // 数据库版本更新时(包括第一次创建数据库)
         this.DBopenRequest.onupgradeneeded = () => {
             console.log('数据库更新');
 
