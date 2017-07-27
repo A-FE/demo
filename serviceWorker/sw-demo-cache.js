@@ -34,10 +34,11 @@ self.addEventListener('fetch', function(event) {
     event.respondWith(caches.match(event.request).catch(function() {
         return fetch(event.request);
     }).then(function(response) {
+        var responseCache = response.clone();
         caches.open(VERSION).then(function(cache) {
-            cache.put(event.request, response);
+            cache.put(event.request, responseCache);
         });
-        return response.clone();
+        return response
     }).catch(function() {
         return fetch(event.request)
     }));
