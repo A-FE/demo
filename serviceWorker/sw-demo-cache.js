@@ -5,7 +5,7 @@ self.addEventListener('install', function(event) {
     event.waitUntil(
         caches.open(VERSION).then(function(cache) {
             return cache.addAll([
-                './test_1.js',
+                './index.html',
                 './cattle.jpg'
             ]);
         })
@@ -33,14 +33,10 @@ self.addEventListener('fetch', function(event) {
     event.respondWith(caches.match(event.request).catch(function() {
         return fetch(event.request);
     }).then(function(response) {
-        if(response){
-            return response
-        }
-        var responseTocache = response.close();
         caches.open(VERSION).then(function(cache) {
-            cache.put(event.request, responseTocache);
+            cache.put(event.request, response);
         });
-        return response;
+        return response.clone();
     }).catch(function() {
         return caches.match('./cattle.jpg');
     }));
