@@ -1,4 +1,4 @@
-var VERSION = Math.random();
+var VERSION = 'v1';
 
 // 缓存
 self.addEventListener('install', function(event) {
