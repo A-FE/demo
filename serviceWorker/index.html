@@ -14,7 +14,7 @@
     <meta name="viewport"
           content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no"/>
     <meta name="baidu-site-verification" content="v3r4JDDzPy"/>
-    <script src="//cdn.bootcss.com/vue/2.2.1/vue.js"></script>
+    <!--<script src="//cdn.bootcss.com/vue/2.2.1/vue.js"></script>-->
     <script src="https://cdn.bootcss.com/jquery/3.2.1/jquery.min.js"></script>
 </head>
 <body>
@@ -29,10 +29,10 @@
 </div>
 <script>
     if('serviceWorker' in navigator){
-        $('#isSupport').test('支持');
+        $('#isSupport').text('支持');
 
         // 开始注册service workers
-        navigator.serviceWorker.register('./sw-demo-cache.js',{scope:'/'})
+        navigator.serviceWorker.register('./sw-demo-cache.js')
             .then(function (registration) {
                 $('#isSuccess').text('注册成功');
 
@@ -56,10 +56,9 @@
                 }
             }).catch(function (error) {
                 $('#isSuccess').text('注册没有成功');
-
-        })else {
-            $('#isSuccess').text('不支持');
-        }
+        })
+    }else {
+        $('#isSuccess').text('不支持');
     }
 </script>
 </body>
