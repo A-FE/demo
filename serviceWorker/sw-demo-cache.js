@@ -15,6 +15,7 @@ self.addEventListener('activate', function(event) {
         caches.keys().then(function(cacheNames) {
             return Promise.all(
                 cacheNames.map(function(cacheName) {
+                    console.log(cacheName,VERSION);
                     // 如果当前版本和缓存版本不一致
                     if (cacheName !== VERSION) {
                         return caches.delete(cacheName);
