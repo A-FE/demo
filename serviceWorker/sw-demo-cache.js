@@ -38,6 +38,6 @@ self.addEventListener('fetch', function(event) {
         });
         return response.clone();
     }).catch(function() {
-        return caches.match('./cattle.jpg');
+        return fetch(event.request)
     }));
 });
