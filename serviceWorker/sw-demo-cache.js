@@ -6,7 +6,8 @@ self.addEventListener('install', function(event) {
         caches.open(VERSION).then(function(cache) {
             return cache.addAll([
                 './index.html',
-                './cattle.jpg'
+                './cattle.jpg',
+                'https://cdn.bootcss.com/jquery/3.2.1/jquery.min.js'
             ]);
         })
     );
