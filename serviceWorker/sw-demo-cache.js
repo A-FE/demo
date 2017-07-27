@@ -4,9 +4,7 @@ var VERSION = Math.random();
 self.addEventListener('install', function(event) {
     event.waitUntil(
         caches.open(VERSION).then(function(cache) {
-            return cache.addAll([
-                './index.html',
-            ]);
+            return cache.addAll([]);
         })
     );
 });
