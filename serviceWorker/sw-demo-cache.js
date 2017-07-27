@@ -42,6 +42,6 @@ self.addEventListener('fetch', function(event) {
         });
         return response;
     }).catch(function() {
-        return caches.match('./cattle.jpg');
+        // return caches.match('./cattle.jpg');
     }));
 });
