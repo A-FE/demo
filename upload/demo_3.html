@@ -8,184 +8,224 @@
     <script src="./js/jszip.min.js"></script>
     <script src="./js/FileSaver.min.js"></script>
     <style>
-        *{margin: 0;padding: 0;}
-        body{font-size: 16px;padding: 40px 30px;}
-        a{text-decoration: none;}
+        * {
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-size: 16px;
+            padding: 40px 30px;
+        }
+
+        a {
+            text-decoration: none;
+        }
+
         /* 自定义按钮 */
-        .m-btn{ display: inline-block; padding: 7px 9px; font-size: 12px; cursor: pointer; user-select:none; -webkit-user-select:none; -moz-user-select:none; -ms-user-select:none; -webkit-touch-callout:none; border-radius: 4px; color: #fff; background-color: #20a0ff; border-color: #20a0ff; }
+        .m-btn {
+            display: inline-block;
+            padding: 7px 9px;
+            font-size: 12px;
+            cursor: pointer;
+            user-select: none;
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+            -webkit-touch-callout: none;
+            border-radius: 4px;
+            color: #fff;
+            background-color: #20a0ff;
+            border-color: #20a0ff;
+        }
 
-        .m-btn:hover{ background: #4db3ff; border-color: #4db3ff; }
+        .m-btn:hover {
+            background: #4db3ff;
+            border-color: #4db3ff;
+        }
 
-        .m-btn:active{ background: #1d90e6; border-color: #1d90e6; }
+        .m-btn:active {
+            background: #1d90e6;
+            border-color: #1d90e6;
+        }
 
         /* 下拉框 */
-        select{ padding: 5px 9px; border-radius: 3px; border: 1px solid #bfcbd9; outline: none; }
+        select {
+            padding: 5px 9px;
+            border-radius: 3px;
+            border: 1px solid #bfcbd9;
+            outline: none;
+        }
 
         /* 压缩结果 */
-        .zip_result>a{
-            display: block;
-            color: #333;
+        .img-item{
             margin-bottom: 20px;
         }
-        .zip_result img{
-            display: inline-block;
-            vertical-align: middle;
-            border-radius: 3px;
-        }
-        .zip_result .text-content{
+        .img-item-lf,.img-item-rt{
             display: inline-block;
             vertical-align: middle;
         }
-        .text-content .img-title{
+        .img-title,.img-des{
             display: inline-block;
+            vertical-align: middle;
             font-size: 16px;
-            font-weight: 500;
-            margin-left: 15px;
         }
-        .text-content .img-des{
-            display: inline-block;
-            font-size: 18px;
-            margin-left: 20px;
-            font-weight: 600;
-            color: #20a0ff;
-        }
+        .img-title{padding: 0 15px;}
+        .img-des{color: #13ce66;font-size: 18px;font-weight: bold;}
+
     </style>
 </head>
 <body>
+<div id="app">
+
+
     <h3 style="text-align: center;font-size: 30px;">在线图片压缩</h3>
     <div style="margin: 20px;">
-    <label for="zip_type">压缩比例</label>
-    <select id="zip_type">
-        <option value="0.9">0.9</option>
-        <option value="0.8">0.8</option>
-        <option value="0.7">0.7</option>
-        <option value="0.6" selected>0.6</option>
-        <option value="0.5">0.5</option>
-        <option value="0.4">0.4</option>
-        <option value="0.3">0.3</option>
-    </select>
-    <label class="m-btn" style="margin-left: 10px;">
-        <input id="upload" type="file" accept="image/gif,image/jpeg,image/png,image/svg" multiple style="display: none;">
-        点击上传
-    </label>
-    <a class="m-btn" id="download" style="display: none;">一键下载</a>
+        <label for="zip_type">压缩比例</label>
+        <select id="zip_type">
+            <option value="0.9">0.9</option>
+            <option value="0.8">0.8</option>
+            <option value="0.7">0.7</option>
+            <option value="0.6" selected>0.6</option>
+            <option value="0.5">0.5</option>
+            <option value="0.4">0.4</option>
+            <option value="0.3">0.3</option>
+        </select>
+        <label class="m-btn" style="margin-left: 10px;">
+            <input id="upload" type="file" accept="image/gif,image/jpeg,image/png,image/svg" multiple
+                   style="display: none;" @change="fileChange">
+            点击上传
+        </label>
+        <a v-if="isShowDownAll" class="m-btn" id="download" style="display: none;">一键下载</a>
     </div>
     <div id="zip_result" class="zip_result">
-
+        <template v-for="item in imgLists">
+            <div class="img-item">
+                <a href="item.url" class="img-item-lf" :download="item.name">
+                    <img :src="item.url" alt="" :width="item.width" :height="item.height">
+                </a>
+                <div class="img-item-rt">
+                    <div class="img-title">{{item.name}}</div>
+                    <p class="img-des">{{item.reduce_rate}}</p>
+                </div>
+            </div>
+        </template>
     </div>
-    <script>
-        var eleFile = document.querySelector('#upload');
-
-        var zip = new JSZip();
-        var images = zip.folder('images');
-        // 一键下载
-        var $download = document.getElementById('download');
-
-        eleFile.addEventListener('change', function (event) {
-            var pei = document.getElementById('zip_type').value;
-            // 选择的文件对象
-            var files = event.target.files;
-            for(var i = 0;i< files.length ; i++){
-                zipImg(files[i],pei);
+</div>
+<script>
+    var vm = new Vue({
+        el: '#app',
+        data: function () {
+            return {
+                // 压缩等级
+                zip_rate: 0.6,
+                // 上传的图片
+                files: [],
+                isShowDownAll: false,
+                // 存放压缩后的图片
+                imgLists: [],
+                zip: null
             }
-            $download.style.display = 'inline-block';
-        })
+        },
+        methods: {
+            // 下载全部
+            downloadAll(){
+                this.zip.generateAsync({
+                    type: "blob",
+                    compression: 'DEFLATE'
+                }).then(function (content) {
+                    saveAs(content, 'images.zip');
+                })
+            },
+            // 下载某一个图片
+            download(item){
 
-        /* 压缩图片 */
-        function zipImg(file,pei) {
-            // 压缩图片需要的一些元素和对象
-            var reader = new FileReader(), Img = new Image();
+            },
+            // 上传图片
+            upload(){
 
-            reader.readAsDataURL(file);
+            },
+            // 当选择框的文件改变时
+            fileChange(event){
+                // 选择的文件对象
+                var files = event.target.files;
+                for (var i = 0; i < files.length; i++) {
+                    this.zipImg(files[i], this.zip_rate);
+                }
+                this.isShowDownAll = true;
+            },
+            // 压缩图片
+            zipImg(file, pei){
+                var _this = this;
+                // 压缩图片需要的一些元素和对象
+                var reader = new FileReader(), Img = new Image();
 
-            reader.onload = function (e) {
-                Img.src = e.target.result;
-            }
+                reader.readAsDataURL(file);
 
-            var ori_size = file.size;
-            var cur_size = 0;
-            var reduce_rate = 0;
-            Img.onload = function () {
-                // 缩放图片需要的canvas
-                var canvas = document.createElement('canvas');
-                var context = canvas.getContext('2d');
-                // 图片原始尺寸
-                var originWidth = this.width;
-                var originHeight = this.height;
+                reader.onload = function (e) {
+                    Img.src = e.target.result;
+                }
 
-                // canvas对图片进行缩放
-                canvas.width = originWidth;
-                canvas.height = originHeight;
-                // 清除画布
-                context.clearRect(0,0,originWidth,originWidth);
-                // 图片压缩
-                context.drawImage(Img, 0, 0, originWidth, originWidth);
+                var ori_size = file.size;
+                var cur_size = 0;
+                var reduce_rate = 0;
+                Img.onload = function () {
+                    // 缩放图片需要的canvas
+                    var canvas = document.createElement('canvas');
+                    var context = canvas.getContext('2d');
+                    // 图片原始尺寸
+                    var originWidth = this.width;
+                    var originHeight = this.height;
 
+                    // canvas对图片进行缩放
+                    canvas.width = originWidth;
+                    canvas.height = originHeight;
+                    // 清除画布
+                    context.clearRect(0, 0, originWidth, originWidth);
+                    // 图片压缩
+                    context.drawImage(Img, 0, 0, originWidth, originWidth);
 
+                    pei = pei <= 1 && pei >= 0 ? parseFloat(pei) : 1;
+                    // 添加到压缩文件
+                    canvas.toBlob(function (blob) {
+                        _this.images.file(file.name, blob);
+                        cur_size = blob.size;
+                        reduce_rate = Math.floor((cur_size - ori_size) / ori_size * 100) + '%';
 
-                pei = pei <= 1 && pei >= 0 ? parseFloat(pei) : 1 ;
-                // 添加到压缩文件
-                canvas.toBlob(function (blob) {
-                    images.file(file.name, blob);
-                    cur_size = blob.size;
-                    reduce_rate = Math.floor((cur_size - ori_size) / ori_size * 100) + '%';
+                        var url = canvas.toDataURL(file.type);
 
-                    var url = canvas.toDataURL(file.type);
-                    var img = new Image();
-                    var $a = document.createElement('a');
-                    $a.setAttribute("href", url);
-                    $a.setAttribute("download", file.name);
+                        // 最大尺寸限制
+                        var maxWidth = 100, maxHeight = 100;
+                        // 目标的展示尺寸
+                        var displayWidth = 0, displayHeight = 0;
 
-                    img.src = url;
-                    // 最大尺寸限制
-                    var maxWidth = 100, maxHeight = 100;
-                    // 目标的展示尺寸
-                    var displayWidth = 0, displayHeight = 0;
-
-                    if(originWidth > maxWidth || originHeight > maxHeight){
-                        if(originWidth / originHeight > maxWidth / maxHeight){
-                            // 如果图片更宽
-                            displayWidth =  maxWidth;
-                            displayHeight = maxWidth / originWidth * originHeight;
-                        }else {
-                            displayHeight = maxHeight;
-                            displayWidth = maxHeight / originHeight * originWidth;
+                        if (originWidth > maxWidth || originHeight > maxHeight) {
+                            if (originWidth / originHeight > maxWidth / maxHeight) {
+                                // 如果图片更宽
+                                displayWidth = maxWidth;
+                                displayHeight = maxWidth / originWidth * originHeight;
+                            } else {
+                                displayHeight = maxHeight;
+                                displayWidth = maxHeight / originHeight * originWidth;
+                            }
                         }
-                    }
 
-                    img.width = displayWidth;
-                    img.height = displayHeight;
-
-                    $a.appendChild(img);
-
-                    var $div = document.createElement('div');
-                    $div.setAttribute('class','text-content')
-                    var $h4 = document.createElement('h4');
-                    $h4.setAttribute('class','img-title')
-                    var $p = document.createElement('p');
-                    $p.setAttribute('class','img-des')
-                    $h4.textContent = file.name;
-                    $p.textContent = reduce_rate;
-                    $div.appendChild($h4).appendChild($p);
-                    $a.appendChild($div);
-
-                    document.getElementById('zip_result').appendChild($a);
-
-                },file.type,pei);
-
-
+                        _this.imgLists.push({
+                            url: url,
+                            name: file.name,
+                            reduce_rate: reduce_rate,
+                            width: displayWidth,
+                            height: displayHeight
+                        });
+                    }, file.type, pei);
+                }
             }
+        },
+        created: function () {
+            this.zip = new JSZip();
+            this.images = this.zip.folder('images');
         }
-
-        $download.onclick = function (e) {
-            zip.generateAsync({
-                type: "blob",
-                compression: 'DEFLATE'
-            }).then(function (content) {
-                saveAs(content,'images.zip');
-            })
-        }
-
-    </script>
+    })
+</script>
 </body>
 </html>
