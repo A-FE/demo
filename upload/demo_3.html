@@ -197,13 +197,16 @@
                     var originWidth = this.width;
                     var originHeight = this.height;
 
+
                     // canvas对图片进行缩放
                     canvas.width = originWidth;
                     canvas.height = originHeight;
+
                     // 清除画布
                     context.clearRect(0, 0, originWidth, originWidth);
                     // 图片压缩
                     context.drawImage(Img, 0, 0, originWidth, originWidth);
+
 
                     pei = pei <= 1 && pei >= 0 ? parseFloat(pei) : 1;
                     // 添加到压缩文件
