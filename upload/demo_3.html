@@ -58,7 +58,7 @@
         }
 
         /* 压缩结果 */
-        .img-item{
+        .img-item {
             display: inline-block;
             margin-right: 20px;
             margin-bottom: 20px;
@@ -67,21 +67,31 @@
             border-radius: 4px;
             background-color: #fff;
             overflow: hidden;
-            box-shadow: 0 2px 4px 0 rgba(0,0,0,.12), 0 0 6px 0 rgba(0,0,0,.04);
+            box-shadow: 0 2px 4px 0 rgba(0, 0, 0, .12), 0 0 6px 0 rgba(0, 0, 0, .04);
         }
-        .img-item-lf,.img-item-rt{
+
+        .img-item-lf, .img-item-rt {
             display: inline-block;
             vertical-align: middle;
         }
-        .img-title,.img-des{
+
+        .img-title, .img-des {
             display: inline-block;
             vertical-align: middle;
             font-size: 16px;
         }
-        .img-title{padding: 0 15px;}
-        .img-des{color: #13ce66;font-size: 18px;font-weight: bold;}
 
-        [v-cloak]{
+        .img-title {
+            padding: 0 15px;
+        }
+
+        .img-des {
+            color: #13ce66;
+            font-size: 18px;
+            font-weight: bold;
+        }
+
+        [v-cloak] {
             display: none;
         }
     </style>
@@ -105,12 +115,12 @@
                    style="display: none;" @change="fileChange">
             点击上传
         </label>
-        <a v-if="isShowDownAll" class="m-btn" id="download">一键下载</a>
+        <a @click="downloadAll" v-if="isShowDownAll" class="m-btn" id="download">一键下载</a>
     </div>
     <div id="zip_result" class="zip_result">
         <template v-for="item in imgLists">
             <div class="img-item">
-                <a href="item.url" class="img-item-lf" :download="item.name">
+                <a :href="item.url" class="img-item-lf" :download="item.name">
                     <img :src="item.url" alt="" :width="item.width" :height="item.height">
                 </a>
                 <div class="img-item-rt">
@@ -133,7 +143,8 @@
                 isShowDownAll: false,
                 // 存放压缩后的图片
                 imgLists: [],
-                zip: null
+                zip: null,
+                downloadUrl: ''
             }
         },
         methods: {
