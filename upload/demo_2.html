@@ -80,7 +80,7 @@
 <body>
     <h3 style="text-align: center;font-size: 30px;">在线图片压缩</h3>
     <div style="margin: 20px;">
-    <label for="zip_type">压缩等级</label>
+    <label for="zip_type">压缩比例</label>
     <select id="zip_type">
         <option value="0.9">0.9</option>
         <option value="0.8">0.8</option>
@@ -149,7 +149,7 @@
 
 
 
-                pei = pei <= 1 && pei >= 0 ? pei : 1 ;
+                pei = pei <= 1 && pei >= 0 ? parseFloat(pei) : 1 ;
                 // 添加到压缩文件
                 canvas.toBlob(function (blob) {
                     images.file(file.name, blob);
