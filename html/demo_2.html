@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no">
+    <title>HTML自定义元素示例二</title>
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge">
+    <meta http-equiv="Cache-Control" content="no-siteapp">
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate"/>
+    <meta http-equiv="Pragma" content="no-cache"/>
+    <meta http-equiv="Expires" content="0"/>
+    <meta name="renderer" content="webkit|ie-comp|ie-stand">
+    <meta content="telephone=no" name="format-detection"/>
+    <meta name="viewport"
+          content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no"/>
+    <meta name="baidu-site-verification" content="v3r4JDDzPy"/>
+    <script src="//cdn.bootcss.com/vue/2.2.1/vue.js"></script>
+    <link rel="import" href="share-buttons.html">
+    <style>
+        chenyan{
+            display: block;
+            font-size: 36px;
+            color: red;
+        }
+    </style>
+</head>
+<body>
+<share-buttons></share-buttons>
+<script>
+    function customTag(tagName,fn) {
+        Array.from(document.getElementsByTagName(tagName))
+            .forEach(fn)
+    }
+
+    function handler(ele) {
+//        ele.innerHTML = '操蛋的' +  String(ele.innerText).slice(0,1) + 'X,这个字好难打'
+    }
+
+    customTag('chenyan',handler)
+
+    var tabs = document.createElement('tabs');
+
+    console.log(tabs instanceof HTMLUnknownElement);
+
+    console.log(tabs instanceof HTMLElement);
+
+
+</script>
+</body>
+</html>

@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no">
+    <title>我的</title>
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge">
+    <meta http-equiv="Cache-Control" content="no-siteapp">
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate"/>
+    <meta http-equiv="Pragma" content="no-cache"/>
+    <meta http-equiv="Expires" content="0"/>
+    <meta name="renderer" content="webkit|ie-comp|ie-stand">
+    <meta content="telephone=no" name="format-detection"/>
+    <meta name="viewport"
+          content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no"/>
+    <meta name="baidu-site-verification" content="v3r4JDDzPy"/>
+    <script src="//cdn.bootcss.com/vue/2.2.1/vue.js"></script>
+    <style>
+        .list-item{
+            cursor: pointer;
+            -webkit-appearance: button;
+            display: inline-block;
+            margin: 20px;
+            padding: 8px 15px;
+            border: solid 1px #d5d5d5;
+        }
+    </style>
+</head>
+<body>
+<button id="add">添加</button>
+<div id="list">
+    <div class="list-item">陈眼</div>
+</div>
+
+<script>
+    var $button = document.getElementById('add');
+    var $list = document.getElementById('list');
+
+    var $listItem = document.getElementsByClassName('list-item');
+    for(var i = 0; i< $listItem.length ; i++){
+        $listItem[i].onclick = function () {
+            alert('吃饭不积极,xx有问题');
+        }
+    }
+
+    $button.onclick = function () {
+        var div = document.createElement('div');
+        div.textContent = '陈yan';
+        div.setAttribute('class','list-item');
+        $list.appendChild(div);
+    }
+</script>
+</body>
+</html>

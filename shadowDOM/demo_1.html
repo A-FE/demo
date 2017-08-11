@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no">
+    <title>shadow DOM</title>
+    <style>
+        input[type=range]{
+            -webkit-appearance: none;
+            background-color: rgba(208, 205, 209, 0.72);
+            width: 200px;
+            height: 8px;
+            outline: none;
+        }
+        input[type=rang]::-webkit-slider-runnable-track{
+            background-color: #20a0ff;
+        }
+        input[type=range]::-webkit-slider-thumb{
+            -webkit-appearance: none;
+            background-color: #20a0ff;
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+            transition: .2s;
+        }
+
+        audio::-webkit-media-controls-timeline{
+            width: 100px;
+        }
+
+        audio{
+            width:400px;
+        }
+    </style>
+</head>
+<body>
+<div onclick="alert('who are you?' + event.target)">
+    <audio controls src="./刘惜君 - 我很快乐.mp3"></audio>
+</div>
+<input type="range" class="custom">
+</body>
+</html>

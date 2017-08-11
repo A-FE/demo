@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no">
+    <title>shadow DOM</title>
+</head>
+<body>
+<p id="hostElement"></p>
+<span>啦啦啦</span>
+<script>
+    // attachShadow兼容性不好
+    var shadow = document.querySelector('#hostElement').attachShadow({mode: 'open'});
+    shadow.innerHTML = '<span>Here is some new text</span>';
+    shadow.innerHTML += '<style>span{color: red;}</style>'
+</script>
+
+<table id="producttable">
+    <thead>
+    <tr>
+        <td>UPC_code</td>
+        <td>Product_Name</td>
+    </tr>
+    </thead>
+    <tbody></tbody>
+</table>
+<template id="productrow">
+    <tr>
+        <td class="record"></td>
+        <td></td>
+    </tr>
+</template>
+<script>
+    // 检测浏览器是否支持template标签
+    if('content' in document.createElement('template')){
+        var t = document.querySelector('#productrow');
+        td = t.content.querySelectorAll('td');
+        td[0].textContent = '1235646565';
+        td[1].textContent = 'Stuff';
+
+        var tb = document.querySelector('tbody');
+        var clone = document.importNode(t.content,true);
+        tb.appendChild(clone);
+
+        td[0].textContent = '03842137489';
+        td[1].textContent = 'ADSKSDFHSJDF';
+
+        var clone2 = document.importNode(t.content, true);
+        tb.appendChild(clone2);
+    }else {
+
+    }
+</script>
+
+</body>
+</html>
