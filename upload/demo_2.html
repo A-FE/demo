@@ -142,7 +142,7 @@
                 // 最大尺寸限制
                 var maxDrawWidth = 2000, maxDrawHeight = 2000;
                 // 目标的绘制尺寸
-                var drawWidth = 0, drawHeight = 0;
+                var drawWidth = originWidth, drawHeight = originHeight;
 
                 if(originWidth > maxDrawWidth || originHeight > maxDrawHeight){
                     if(originWidth / originHeight > maxDrawWidth / maxDrawHeight){
