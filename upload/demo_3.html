@@ -157,14 +157,6 @@
                     saveAs(content, 'images.zip');
                 })
             },
-            // 下载某一个图片
-            download(item){
-
-            },
-            // 上传图片
-            upload(){
-
-            },
             // 当选择框的文件改变时
             fileChange(event){
                 // 选择的文件对象
@@ -196,17 +188,29 @@
                     // 图片原始尺寸
                     var originWidth = this.width;
                     var originHeight = this.height;
+                    // 最大尺寸限制
+                    var maxDrawWidth = 2000, maxDrawHeight = 2000;
+                    // 目标的绘制尺寸
+                    var drawWidth = originWidth, drawHeight = originHeight;
 
+                    if(originWidth > maxDrawWidth || originHeight > maxDrawHeight){
+                        if(originWidth / originHeight > maxDrawWidth / maxDrawHeight){
+                            // 如果图片更宽
+                            drawWidth =  maxDrawWidth;
+                            drawHeight = maxDrawWidth / originWidth * originHeight;
+                        }else {
+                            drawHeight = maxDrawHeight;
+                            drawWidth = maxDrawHeight / originHeight * originWidth;
+                        }
+                    }
 
                     // canvas对图片进行缩放
-                    canvas.width = originWidth;
-                    canvas.height = originHeight;
-
+                    canvas.width = drawWidth;
+                    canvas.height = drawHeight;
                     // 清除画布
-                    context.clearRect(0, 0, originWidth, originWidth);
+                    context.clearRect(0,0,drawWidth,drawHeight);
                     // 图片压缩
-                    context.drawImage(Img, 0, 0, originWidth, originWidth);
-
+                    context.drawImage(Img, 0, 0, drawWidth, drawHeight);
 
                     pei = pei <= 1 && pei >= 0 ? parseFloat(pei) : 1;
                     // 添加到压缩文件
