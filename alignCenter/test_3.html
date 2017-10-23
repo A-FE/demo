@@ -40,6 +40,38 @@
   <div class="box-wrap">
     <img src="./img/chenfala.jpg" height="300" class="box">
   </div>
+
+  <h3>代码</h3>
+  <pre>
+    &lt;div class="box-wrap"&gt;
+      &lt;img src="./img/chenfala.jpg" height="300" class="box"&gt;
+    &lt;/div&gt;
+
+    &lt;style&gt;
+      body {
+        width: 100vw;
+        height: 100vh;
+      }
+      .box-wrap {
+        position: fixed;
+        left: 0;
+        top: 0;
+        bottom: 0;
+        right: 0;
+        text-align: center;
+      }
+      .box-wrap::before {
+        content: '';
+        display: inline-block;
+        vertical-align: middle;
+        width: 0;
+        height: 100%;
+      }
+      .box {
+        vertical-align: middle;
+      }
+    &lt;/style&gt;
+  </pre>
 </body>
 
 </html>
