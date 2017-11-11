@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no">
+    <title>svg动画</title>
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge">
+    <meta http-equiv="Cache-Control" content="no-siteapp">
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+    <meta http-equiv="Pragma" content="no-cache" />
+    <meta http-equiv="Expires" content="0" />
+    <meta name="renderer" content="webkit|ie-comp|ie-stand">
+    <meta content="telephone=no" name="format-detection" />
+    <meta name="viewport" content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no"
+    />
+    <meta name="baidu-site-verification" content="v3r4JDDzPy" />
+    <script src="https://cdn.bootcss.com/snap.svg/0.5.1/snap.svg-min.js"></script>
+    <script src="https://cdn.bootcss.com/vue/2.2.1/vue.js"></script>
+    <style>
+        svg {
+            fill: red;
+        }
+
+        rect {
+            border-radius: 2px;
+        }
+    </style>
+</head>
+
+<body>
+    <svg id="button-close-or-more" class="more" width="36" height="36" viewBox="0 0 36 36">
+        <g>
+            <rect id="rect-1" width="32" height="4" x="2" y="9" rx="2" ry="2">
+                <animate id="MoreToClose" attributeName="y" begin="indefinite" dur=".8s" from="9" by="7" fill="freeze"></animate>
+                <animateTransform attributeName="transform" begin="MoreToClose.begin" dur=".8s" type="rotate" from="0 18 9" to="45 18 18"
+                    fill="freeze"></animateTransform>
+                <animate id="CloseToMore" attributeName="y" begin="indefinite" dur=".8s" from="9" by="7" fill="freeze"></animate>
+                <animateTransform attributeName="transform" begin="CloseToMore.begin" dur=".8s" type="rotate" from="0 18 9" to="45 18 18"
+                    fill="freeze"></animateTransform>
+
+            </rect>
+            <rect id="rect-2" width="32" height="4" x="2" y="23" rx="2" ry="2">
+                <animate attributeName="y" begin="MoreToClose.begin" dur=".8s" from="23" by="-7" fill="freeze"></animate>
+                <animateTransform attributeName="transform" begin="MoreToClose.begin" dur=".8s" type="rotate" from="0 18 28" to="-45 18 18"
+                    fill="freeze"></animateTransform>
+
+                <animate attributeName="y" begin="CloseToMore.begin" dur=".8s" from="23" by="-7" fill="freeze"></animate>
+                <animateTransform attributeName="transform" begin="CloseToMore.begin" dur=".8s" type="rotate" from="0 18 28" to="-45 18 18"
+                    fill="freeze"></animateTransform>
+            </rect>
+        </g>
+    </svg>
+
+    <script>
+        let svg = document.querySelector('#button-close-or-more');
+        let MoreToClose = svg.querySelector('#MoreToClose');
+        let CloseToMore = svg.querySelector('#CloseToMore');
+        svg.onclick = function () {
+            MoreToClose.beginElement();
+            console.log(MoreToClose, CloseToMore)
+        }
+    </script>
+</body>
+
+</html>
