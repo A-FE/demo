@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>弹框</title>
+  <style>
+    .el-dialog__wrapper {
+      position: fixed;
+      top: 0;
+      right: 0;
+      bottom: 0;
+      left: 0;
+      overflow: auto;
+      margin: 0;
+      background: rgba(0, 0, 0, 0.3)
+    }
+
+    .el-dialog {
+      position: relative;
+      margin: 0 auto 50px;
+      background: #fff;
+      border-radius: 2px;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, .3);
+      box-sizing: border-box;
+      width: 50%;
+      animation: fadeIn .2s linear forwards;
+    }
+
+    @keyframes fadeIn {
+      0% {
+        transform: translate3d(0, -50px, 0);
+        opacity: 0;
+      }
+      100% {
+        transform: translate3d(0, 0, 0);
+        opacity: 1;
+      }
+    }
+
+    .el-dialog__header {
+      padding: 15px;
+      padding-bottom: 10px;
+    }
+
+    .el-dialog__headerbtn {
+      position: absolute;
+      top: 15px;
+      right: 15px;
+      padding: 0;
+      background: transparent;
+      border: none;
+      outline: none;
+      cursor: pointer;
+      font-size: 16px;
+    }
+
+    .el-dialog__body {
+      padding: 30px 20px;
+      color: #5a5e66;
+      line-height: 24px;
+      font-size: 14px;
+    }
+
+    .el-dialog__footer {
+      padding: 15px;
+      padding-top: 10px;
+      text-align: right;
+      box-sizing: border-box;
+    }
+
+    .el-button {
+      display: inline-block;
+      line-height: 1;
+      white-space: nowrap;
+      cursor: pointer;
+      background: #fff;
+      border: 1px solid #d8dce5;
+      border-color: #d8dce5;
+      color: #5a5e66;
+      -webkit-appearance: none;
+      text-align: center;
+      box-sizing: border-box;
+      outline: none;
+      margin: 0;
+      transition: .1s;
+      font-weight: 500;
+      -moz-user-select: none;
+      -webkit-user-select: none;
+      -ms-user-select: none;
+      padding: 12px 20px;
+      font-size: 14px;
+      border-radius: 4px;
+    }
+
+    .el-button--primary {
+      color: #fff;
+      background-color: #409eff;
+      border-color: #409eff;
+    }
+
+    .el-button:active {
+      color: #3a8ee6;
+      border-color: #3a8ee6;
+      outline: none;
+    }
+
+    .el-button--primary.is-active,
+    .el-button--primary:active {
+      background: #3a8ee6;
+      border-color: #3a8ee6;
+      color: #fff;
+    }
+  </style>
+</head>
+
+<body>
+  <script>
+    function openDialog() {
+      var $dialog = document.querySelector('.el-dialog__wrapper')
+      $dialog.style.display = 'block'
+    }
+
+    function closeDialog() {
+      var $dialog = document.querySelector('.el-dialog__wrapper')
+      $dialog.style.display = 'none'
+    }
+  </script>
+  <button onclick="openDialog()">打开</button>
+
+  <div class="el-dialog__wrapper" style="z-index: 2002;display: none;">
+    <div class="el-dialog" style="width: 30%; margin-top: 15vh;">
+      <div class="el-dialog__header">
+        <span class="el-dialog__title">提示</span>
+        <button type="button" aria-label="Close" class="el-dialog__headerbtn">
+          <i class="el-dialog__close el-icon el-icon-close" onclick="closeDialog()">
+            <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="16" height="16" class="icon" p-id="1429"
+              t="1511436446850" version="1.1" viewBox="0 0 1024 1024">
+              <defs>
+                <style type="text/css" />
+              </defs>
+              <path d="M512 620.544l253.3376 253.3376a76.6976 76.6976 0 1 0 108.544-108.544L620.6464 512l253.2352-253.3376a76.6976 76.6976 0 1 0-108.544-108.544L512 403.3536 258.6624 150.1184a76.6976 76.6976 0 1 0-108.544 108.544L403.3536 512 150.1184 765.3376a76.6976 76.6976 0 1 0 108.544 108.544L512 620.6464z"
+                p-id="1430" />
+            </svg>
+          </i>
+        </button>
+      </div>
+      <div class="el-dialog__body">
+        <span>这是一段信息</span>
+      </div>
+      <div class="el-dialog__footer">
+        <span class="dialog-footer">
+          <button type="button" class="el-button el-button--default">
+            <!---->
+            <!---->
+            <span onclick="closeDialog()">取 消</span>
+          </button>
+          <button type="button" class="el-button el-button--primary">
+            <!---->
+            <!---->
+            <span onclick="closeDialog()">确 定</span>
+          </button>
+        </span>
+      </div>
+    </div>
+  </div>
+</body>
+
+</html>

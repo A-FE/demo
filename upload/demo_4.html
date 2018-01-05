@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no">
+    <title>视屏压缩</title>
+    <script src="./js/vue.min.js"></script>
+    <script src="./js/jszip.min.js"></script>
+    <script src="./js/FileSaver.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-size: 16px;
+            padding: 40px 30px;
+        }
+
+        a {
+            text-decoration: none;
+        }
+
+        /* 自定义按钮 */
+
+        .m-btn {
+            display: inline-block;
+            padding: 7px 9px;
+            font-size: 12px;
+            cursor: pointer;
+            user-select: none;
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+            -webkit-touch-callout: none;
+            border-radius: 4px;
+            color: #fff;
+            background-color: #20a0ff;
+            border-color: #20a0ff;
+        }
+
+        .m-btn:hover {
+            background: #4db3ff;
+            border-color: #4db3ff;
+        }
+
+        .m-btn:active {
+            background: #1d90e6;
+            border-color: #1d90e6;
+        }
+
+        /* 下拉框 */
+
+        select {
+            padding: 5px 9px;
+            border-radius: 3px;
+            border: 1px solid #bfcbd9;
+            outline: none;
+        }
+
+        /* 压缩结果 */
+
+        .img-item {
+            display: inline-block;
+            margin-right: 20px;
+            margin-bottom: 20px;
+            padding: 20px;
+            border: 1px solid #d1dbe5;
+            border-radius: 4px;
+            background-color: #fff;
+            overflow: hidden;
+            box-shadow: 0 2px 4px 0 rgba(0, 0, 0, .12), 0 0 6px 0 rgba(0, 0, 0, .04);
+        }
+
+        .img-item-lf,
+        .img-item-rt {
+            display: inline-block;
+            vertical-align: middle;
+        }
+
+        .img-title,
+        .img-des {
+            display: inline-block;
+            vertical-align: middle;
+            font-size: 16px;
+        }
+
+        .img-title {
+            padding: 0 15px;
+        }
+
+        .img-des {
+            color: #13ce66;
+            font-size: 18px;
+            font-weight: bold;
+        }
+
+        [v-cloak] {
+            display: none;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="app" v-cloak>
+        <h3 style="text-align: center;font-size: 30px;">在线图片压缩</h3>
+        <div style="margin: 20px;">
+            <label class="m-btn" style="margin-left: 10px;">
+                <input id="upload" type="file" accept="video/*" capture="camera" style="display: none;" @change="fileChange"> 点击上传
+            </label>
+            <a @click="downloadAll" v-if="isShowDownAll" class="m-btn" id="download">一键下载</a>
+        </div>
+        <div id="zip_result" class="zip_result">
+            <template v-for="item in imgLists">
+                <div class="img-item">
+                    <a :href="item.url" class="img-item-lf" :download="item.name">
+                        <img :src="item.url" alt="" :width="item.width" :height="item.height">
+                    </a>
+                    <div class="img-item-rt">
+                        <div class="img-title">{{item.name}}</div>
+                        <p class="img-des">{{item.reduce_rate}}</p>
+                    </div>
+                </div>
+            </template>
+        </div>
+    </div>
+    <script>
+        var vm = new Vue({
+            el: '#app',
+            data: function () {
+                return {
+                    // 压缩等级
+                    zip_rate: 0.6,
+                    // 上传的图片
+                    files: [],
+                    isShowDownAll: false,
+                    // 存放压缩后的图片
+                    imgLists: [],
+                    zip: null,
+                    downloadUrl: ''
+                }
+            },
+            methods: {
+                // 下载全部
+                downloadAll() {
+                    this.zip.generateAsync({
+                        type: "blob",
+                        compression: 'DEFLATE'
+                    }).then(function (content) {
+                        saveAs(content, 'images.zip');
+                    })
+                },
+                // 当选择框的文件改变时
+                fileChange(event) {
+                    // 选择的文件对象
+                    var files = event.target.files;
+                    for (var i = 0; i < files.length; i++) {
+                        this.zipImg(files[i], this.zip_rate);
+                    }
+                    this.isShowDownAll = true;
+                },
+                // 压缩图片
+                zipImg(file, pei) {
+                    var _this = this;
+                    // 压缩图片需要的一些元素和对象
+                    var reader = new FileReader(), Img = new Image();
+
+                    reader.readAsDataURL(file);
+
+                    reader.onload = function (e) {
+                        Img.src = e.target.result;
+                    }
+
+                    var ori_size = file.size;
+                    var cur_size = 0;
+                    var reduce_rate = 0;
+                    Img.onload = function () {
+                        // 缩放图片需要的canvas
+                        var canvas = document.createElement('canvas');
+                        var context = canvas.getContext('2d');
+                        // 图片原始尺寸
+                        var originWidth = this.width;
+                        var originHeight = this.height;
+                        // 最大尺寸限制
+                        var maxDrawWidth = 2000, maxDrawHeight = 2000;
+                        // 目标的绘制尺寸
+                        var drawWidth = originWidth, drawHeight = originHeight;
+
+                        if (originWidth > maxDrawWidth || originHeight > maxDrawHeight) {
+                            if (originWidth / originHeight > maxDrawWidth / maxDrawHeight) {
+                                // 如果图片更宽
+                                drawWidth = maxDrawWidth;
+                                drawHeight = maxDrawWidth / originWidth * originHeight;
+                            } else {
+                                drawHeight = maxDrawHeight;
+                                drawWidth = maxDrawHeight / originHeight * originWidth;
+                            }
+                        }
+
+                        // canvas对图片进行缩放
+                        canvas.width = drawWidth;
+                        canvas.height = drawHeight;
+                        // 清除画布
+                        context.clearRect(0, 0, drawWidth, drawHeight);
+                        // 图片压缩
+                        context.drawImage(Img, 0, 0, drawWidth, drawHeight);
+
+                        pei = pei <= 1 && pei >= 0 ? parseFloat(pei) : 1;
+                        // 添加到压缩文件
+                        canvas.toBlob(function (blob) {
+                            _this.images.file(file.name, blob);
+                            cur_size = blob.size;
+                            reduce_rate = Math.floor((cur_size - ori_size) / ori_size * 100) + '%';
+
+                            var url = canvas.toDataURL(file.type);
+
+                            // 最大尺寸限制
+                            var maxWidth = 100, maxHeight = 100;
+                            // 目标的展示尺寸
+                            var displayWidth = 0, displayHeight = 0;
+
+                            if (originWidth > maxWidth || originHeight > maxHeight) {
+                                if (originWidth / originHeight > maxWidth / maxHeight) {
+                                    // 如果图片更宽
+                                    displayWidth = maxWidth;
+                                    displayHeight = maxWidth / originWidth * originHeight;
+                                } else {
+                                    displayHeight = maxHeight;
+                                    displayWidth = maxHeight / originHeight * originWidth;
+                                }
+                            }
+
+                            _this.imgLists.push({
+                                url: url,
+                                name: file.name,
+                                reduce_rate: reduce_rate,
+                                width: displayWidth,
+                                height: displayHeight
+                            });
+                        }, file.type, pei);
+                    }
+                }
+            },
+            created: function () {
+                this.zip = new JSZip();
+                this.images = this.zip.folder('images');
+            }
+        })
+    </script>
+</body>
+
+</html>
