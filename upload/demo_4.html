@@ -7,6 +7,7 @@
     <title>视屏压缩</title>
     <script src="./js/vue.min.js"></script>
     <script src="./js/jszip.min.js"></script>
+    <script src="./js/jszip-utils.min.js"></script>
     <script src="./js/FileSaver.min.js"></script>
     <style>
         * {
@@ -131,9 +132,7 @@
             el: '#app',
             data: function () {
                 return {
-                    // 压缩等级
-                    zip_rate: 0.6,
-                    // 上传的图片
+                    // 上传的文件
                     files: [],
                     isShowDownAll: false,
                     // 存放压缩后的图片
@@ -143,109 +142,43 @@
                 }
             },
             methods: {
-                // 下载全部
-                downloadAll() {
-                    this.zip.generateAsync({
-                        type: "blob",
-                        compression: 'DEFLATE'
-                    }).then(function (content) {
-                        saveAs(content, 'images.zip');
-                    })
-                },
                 // 当选择框的文件改变时
                 fileChange(event) {
                     // 选择的文件对象
                     var files = event.target.files;
                     for (var i = 0; i < files.length; i++) {
-                        this.zipImg(files[i], this.zip_rate);
+                        this.zipFile(files[i]);
                     }
-                    this.isShowDownAll = true;
+                    // this.isShowDownAll = true;
                 },
                 // 压缩图片
-                zipImg(file, pei) {
-                    var _this = this;
-                    // 压缩图片需要的一些元素和对象
-                    var reader = new FileReader(), Img = new Image();
+                zipFile(file) {
+                    var originSize = file.size
+                    var zipSize = 0
+                    var per = 0
 
-                    reader.readAsDataURL(file);
-
-                    reader.onload = function (e) {
-                        Img.src = e.target.result;
-                    }
-
-                    var ori_size = file.size;
-                    var cur_size = 0;
-                    var reduce_rate = 0;
-                    Img.onload = function () {
-                        // 缩放图片需要的canvas
-                        var canvas = document.createElement('canvas');
-                        var context = canvas.getContext('2d');
-                        // 图片原始尺寸
-                        var originWidth = this.width;
-                        var originHeight = this.height;
-                        // 最大尺寸限制
-                        var maxDrawWidth = 2000, maxDrawHeight = 2000;
-                        // 目标的绘制尺寸
-                        var drawWidth = originWidth, drawHeight = originHeight;
-
-                        if (originWidth > maxDrawWidth || originHeight > maxDrawHeight) {
-                            if (originWidth / originHeight > maxDrawWidth / maxDrawHeight) {
-                                // 如果图片更宽
-                                drawWidth = maxDrawWidth;
-                                drawHeight = maxDrawWidth / originWidth * originHeight;
-                            } else {
-                                drawHeight = maxDrawHeight;
-                                drawWidth = maxDrawHeight / originHeight * originWidth;
-                            }
+                    var fileURL = URL.createObjectURL(file)
+                    JSZipUtils.getBinaryContent(fileURL, function (err, data) {
+                        if (err) {
+                            console.log(err)
+                        } else {
+                            var zip = new JSZip();
+                            zip.file("video.mp4", data, { binary: true });
+                            zip.generateAsync({ type: "blob" }).then(function (blob) {
+                                console.log('压缩后的大小', blob)
+                                zipSize = blob.size
+                                per = zipSize / originSize
+                                alert('压缩率' + per)
+                                // saveAs(blob, "video.zip");
+                            }, function (err) {
+                                console.log(err)
+                            })
                         }
-
-                        // canvas对图片进行缩放
-                        canvas.width = drawWidth;
-                        canvas.height = drawHeight;
-                        // 清除画布
-                        context.clearRect(0, 0, drawWidth, drawHeight);
-                        // 图片压缩
-                        context.drawImage(Img, 0, 0, drawWidth, drawHeight);
-
-                        pei = pei <= 1 && pei >= 0 ? parseFloat(pei) : 1;
-                        // 添加到压缩文件
-                        canvas.toBlob(function (blob) {
-                            _this.images.file(file.name, blob);
-                            cur_size = blob.size;
-                            reduce_rate = Math.floor((cur_size - ori_size) / ori_size * 100) + '%';
-
-                            var url = canvas.toDataURL(file.type);
-
-                            // 最大尺寸限制
-                            var maxWidth = 100, maxHeight = 100;
-                            // 目标的展示尺寸
-                            var displayWidth = 0, displayHeight = 0;
-
-                            if (originWidth > maxWidth || originHeight > maxHeight) {
-                                if (originWidth / originHeight > maxWidth / maxHeight) {
-                                    // 如果图片更宽
-                                    displayWidth = maxWidth;
-                                    displayHeight = maxWidth / originWidth * originHeight;
-                                } else {
-                                    displayHeight = maxHeight;
-                                    displayWidth = maxHeight / originHeight * originWidth;
-                                }
-                            }
-
-                            _this.imgLists.push({
-                                url: url,
-                                name: file.name,
-                                reduce_rate: reduce_rate,
-                                width: displayWidth,
-                                height: displayHeight
-                            });
-                        }, file.type, pei);
-                    }
+                    })
                 }
             },
             created: function () {
                 this.zip = new JSZip();
-                this.images = this.zip.folder('images');
             }
         })
     </script>
