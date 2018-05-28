@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <script src="https://cdn.jsdelivr.net/npm/signature_pad@2.3.2/dist/signature_pad.min.js"></script>
+</head>
+
+<body>
+    <canvas></canvas>
+    <img alt="" style="margin-top: 20px;">
+    <button onclick="save()">保存</button>
+    <script>
+
+        var canvas = document.querySelector("canvas");
+        var signaturePad = new SignaturePad(canvas, {
+            backgroundColor: 'rgb(255, 255, 255)'
+        });
+
+        function save() {
+            var url = signaturePad.toDataURL("image/jpeg");
+            var $img = document.querySelector('img');
+            $img.setAttribute('src', url);
+            console.log(url);
+        }
+
+    </script>
+</body>
+
+</html>

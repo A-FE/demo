@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>组件通讯——$attrs/$listeners</title>
+    <script src="https://cdn.bootcss.com/vue/2.5.16/vue.js"></script>
+</head>
+
+<body>
+    <div id="app">
+        <component-a></component-a>
+    </div>
+
+    <script type="text/x-template" id="component-a">
+        <div>
+            <span> 税后工资: ¥{{result}} </span>
+            <component-b name="加薪"  @add="add" /> 
+        </div>
+    </script>
+
+    <script type="text/x-template" id="component-b">
+        <component-c v-bind="$attrs" v-on="$listeners" />
+    </script>
+
+    <script type="text/x-template" id="component-c">
+        <button @click="handleAddClick">{{name}}</button>
+    </script>
+
+    <script>
+        Vue.component('component-a', {
+            template: '#component-a',
+            data() {
+                return {
+                    result: 10000
+                }
+            },
+            created() {
+                this.$on('add', this.add)
+            },
+            methods: {
+                add(n) {
+                    this.result += n
+                }
+            }
+        })
+
+        Vue.component('component-b', {
+            template: '#component-b'
+        })
+
+        Vue.component('component-c', {
+            template: '#component-c',
+            props: ['name'],
+            methods: {
+                handleAddClick() {
+                    this.$emit('add', 10000)
+                }
+            }
+        })
+
+        new Vue({
+            el: '#app'
+        })
+    </script>
+</body>
+
+</html>

@@ -156,7 +156,7 @@
                     var originSize = file.size
                     var zipSize = 0
                     var per = 0
-
+                    alert(`原始文件大小${(file.size / 1024000).toFixed(2)}M,原始文件类型${file.type}`)
                     var fileURL = URL.createObjectURL(file)
                     JSZipUtils.getBinaryContent(fileURL, function (err, data) {
                         if (err) {
@@ -168,6 +168,7 @@
                                 console.log('压缩后的大小', blob)
                                 zipSize = blob.size
                                 per = zipSize / originSize
+                                alert(`压缩后的大小${(blob.size / 1024000).toFixed(2)}M,压缩后的类型${blob.type}`)
                                 alert('压缩率' + per)
                                 // saveAs(blob, "video.zip");
                             }, function (err) {

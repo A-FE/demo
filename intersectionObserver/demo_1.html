@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>IntersectionObserver</title>
+    <style>
+        .app {
+            height: 2000px;
+        }
+
+        img {
+            display: block;
+            height: 200px;
+        }
+    </style>
+    <script src="intersection-observer.js"></script>
+</head>
+
+<body>
+    <div class="app">
+        <div style="height: 400px;"></div>
+        <img src="./img/default.jpg" data-src="http://img5.imgtn.bdimg.com/it/u=1382220122,116019321&fm=27&gp=0.jpg" class="lazyload">
+        <img src="./img/default.jpg" data-src="http://img0.imgtn.bdimg.com/it/u=963486794,2250595198&fm=27&gp=0.jpg" class="lazyload">
+        <img src="./img/default.jpg" data-src="http://img0.imgtn.bdimg.com/it/u=3670312775,3708661673&fm=27&gp=0.jpg" class="lazyload">
+        <img src="./img/default.jpg" data-src="http://img1.imgtn.bdimg.com/it/u=68490578,3285588023&fm=27&gp=0.jpg" class="lazyload">
+    </div>
+    <script>
+        var io = new IntersectionObserver(entries => {
+            callback(entries)
+        })
+
+        var $lazyloadEle = document.querySelectorAll('.lazyload');
+
+        $lazyloadEle.forEach(function(ele){
+            io.observe(ele);
+        })
+
+        function callback(entries) {
+            console.log(entries)
+            entries.forEach(element => {
+                if (element.isIntersecting) {
+                    var target = element.target;
+                    console.log('元素在可视区内',target);
+                    target.setAttribute('src', target.getAttribute('data-src'));
+                    target.removeAttribute('data-src');
+                    io.unobserve(target)
+                }
+            });
+        }
+    </script>
+</body>
+
+</html>

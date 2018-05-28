@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>padding-top实现容器固定长宽比</title>
+    <style>
+        .aspectration {
+            position: relative;
+            display: inline-block;
+            width: 100%;
+            height: 0;
+            border: solid 1px rebeccapurple;
+        }
+
+        [data-ratio="16:9"] {
+            padding-top: 56%;
+        }
+
+        [data-ratio="4:3"] {
+            padding-top: 75%;
+        }
+
+        [data-ratio="1:1"] {
+            padding-top: 100%;
+        }
+
+        .aspectration-content {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            border: solid 1px tomato;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="aspectration" data-ratio="16:9">
+        <div class="aspectration-content">长宽比16:9</div>
+    </div>
+    <div class="aspectration" data-ratio="4:3">
+        <div class="aspectration-content">长宽比4:3</div>
+    </div>
+    <div class="aspectration" data-ratio="1:1">
+        <div class="aspectration-content">长宽比1:1</div>
+    </div>
+</body>
+
+</html>
