@@ -1,0 +1,48 @@
+<!-- parseHTMl start -->
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>浏览器的渲染机制</title>
+    <!-- sendRequest main.css, 请求资源, parseHTMl继续执行, recive data, parse stylesSheet -->
+    <!-- css recive完既执行parse -->
+    <link rel="stylesheet" href="./css/main.css">
+
+    <!-- sendRequest index.css, recive data -->
+    <link href="https://cdn.bootcss.com/element-ui/2.4.0/theme-chalk/index.css" rel="stylesheet">
+    <!-- sendRequest main.js, recive data -->
+    <!-- recive data之后没有马上执行, 而是等上面的资源parse完再 -->
+
+    <script src="./js/main.js"></script>
+    <script src="./js/async.js" async></script>
+    <script src="./js/defer.js" defer></script>
+    <script>
+        window.addEventListener('pageshow', function () {
+            console.log('pageshow')
+        })
+        window.addEventListener('load', function () {
+            console.log('load')
+        })
+    </script>
+</head>
+
+<body>
+    <div>lalala</div>
+    <ul></ul>
+    <script>
+        var $ul = document.querySelector('ul')
+        var result = ''
+        for (let i = 0; i < 10; i++) {
+            result += '<li>列表项' + i + '</li>';
+        }
+
+        $ul.innerHTML = result
+    </script>
+    <div>北京欢迎你</div>
+</body>
+
+</html>
+<!-- parseHTML end -->

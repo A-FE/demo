@@ -48,7 +48,12 @@
         })
 
         Vue.component('component-b', {
-            template: '#component-b'
+            template: '#component-b',
+            created() {
+                this.$on('add', function(){
+                    console.log('看到我,说明我也接收到add事件')
+                })
+            }
         })
 
         Vue.component('component-c', {

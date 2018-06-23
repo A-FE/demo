@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>组件通讯——provide/inject</title>
+    <script src="https://cdn.bootcss.com/vue/2.5.16/vue.js"></script>
+    <style>
+        .m-input {
+            font-family: Monospaced Number, Chinese Quote, -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, PingFang SC, Hiragino Sans GB, Microsoft YaHei, Helvetica Neue, Helvetica, Arial, sans-serif;
+            font-size: 14px;
+            line-height: 1.5;
+            color: rgba(0, 0, 0, .65);
+            -webkit-box-sizing: border-box;
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            list-style: none;
+            position: relative;
+            display: inline-block;
+            width: 100%;
+        }
+
+        .m-input--inline {
+            -webkit-appearance: none;
+            font-family: Monospaced Number, Chinese Quote, -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, PingFang SC, Hiragino Sans GB, Microsoft YaHei, Helvetica Neue, Helvetica, Arial, sans-serif;
+            -webkit-box-sizing: border-box;
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            list-style: none;
+            position: relative;
+            display: inline-block;
+            padding: 4px 11px;
+            width: 100%;
+            height: 32px;
+            font-size: 14px;
+            line-height: 1.5;
+            color: rgba(0, 0, 0, .65);
+            background-color: #fff;
+            background-image: none;
+            border: 1px solid #d9d9d9;
+            border-radius: 4px;
+            -webkit-transition: all .3s;
+            transition: all .3s;
+        }
+
+        .m-input--inline:focus {
+            outline: 0;
+            -webkit-box-shadow: 0 0 0 2px rgba(24, 144, 255, .2);
+            box-shadow: 0 0 0 2px rgba(24, 144, 255, .2);
+        }
+
+        .is-error .m-input--inline {
+            border-color: #f5222d;
+        }
+
+        .is-error .m-input-message {
+            color: #f5222d;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="app">
+        <m-form :model="form" :rules="rules">
+            <m-form-item prop="name">
+                <m-input v-model="form.name" placeholder="请输入姓名">
+                </m-input>
+            </m-form-item>
+        </m-form>
+    </div>
+
+
+    <script>
+        Vue.component('m-form', {
+            template: `<div class="m-form"><slot></slot></div>`,
+            provide() {
+                return {
+                    mForm: this
+                }
+            },
+            props: ['model', 'rules']
+        })
+
+        Vue.component('m-form-item', {
+            template: `<div class="m-form-item" :class="{'is-error': isError, 'is-required': isRequired}"><slot></slot></div>`,
+            inject: ['mForm'],
+            provide() {
+                return {
+                    mFormItem: this
+                }
+            },
+            props: ['prop'],
+            data() {
+                return {
+                    isError: false,
+                    errMsg: null
+                }
+            },
+            computed: {
+                rule() {
+                    return (this.prop && this.mForm.rules) ? this.mForm.rules[this.prop] : {}
+                },
+                isRequired() {
+                    return this.rule.required
+                }
+            },
+            created() {
+                this.$on('validate', this.validate)
+            },
+            methods: {
+                validate(val) {
+                    let rules = this.mForm.rules
+                    let form = this.mForm.model
+                    let field = this.prop
+                    let value = form[field]
+                    for (let key in rules) {
+                        switch (key) {
+                            case 'required':
+                                if (!value) {
+                                    this.isError = true
+                                }
+                                break
+                            case 'message':
+                                this.errMsg = rules[key] ? rules[keys] : null
+                                break
+                        }
+                    }
+                }
+            }
+        })
+
+        Vue.component('m-input', {
+            template: ` <div class="m-input"><input v-model = "model" :placeholder = "placeholder" @blur = "handleBlur" @input = "handleChange" class="m-input--inline" /><div class="m-input-message">{{errMsg}}</div></div>`,
+            inject: ['mForm', 'mFormItem'],
+            props: ['value', 'placeholder'],
+            data() {
+                return {
+                    errMsg: ''
+                }
+            },
+            computed: {
+                model: {
+                    get() {
+                        return this.value
+                    },
+                    set(val) {
+                        this.$emit('input', val)
+                    }
+                }
+            },
+            methods: {
+                handleBlur(event) {
+                    console.log('blur')
+                    let e = event || window.event
+                    let val = e.target.value
+                },
+                handleChange(event) {
+                    let rules = this.mForm.rules
+                    let field = this.mFormItem.prop
+                    let rule = rules[field]
+                    let isNeedValidate = rule.trigger && rule.trigger.indexOf('change') !== -1
+                    if (isNeedValidate) {
+                        let e = event || window.event
+                        let val = e.target.value
+                        this.mFormItem.$emit('validate', val)
+                    }
+
+                },
+            }
+        })
+
+        new Vue({
+            el: '#app',
+            data() {
+                return {
+                    form: {
+                        name: ''
+                    },
+                    rules: {
+                        name: {
+                            required: true,
+                            message: '请输入',
+                            trigger: 'change, blur'
+                        }
+                    }
+                }
+            }
+        })
+    </script>
+</body>
+
+</html>

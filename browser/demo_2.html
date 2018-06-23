@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>window事件</title>
+    <script>
+        window.onerror = function (err) {
+            console.error(err)
+            alert('someThing is wrong')
+        }
+
+        //添加load事件
+        window.addEventListener('load', function () {
+            alert('load执行')
+        });
+
+        //添加DOMContentLoaded事件
+        window.addEventListener('DOMContentLoaded', function () {
+            alert('domContentLoad执行')
+        });
+
+        // 添加刷新页面, 离开页面事件
+        window.addEventListener('pagehide', function () {
+            alert('页面被刷新')
+        })
+
+        // 添加页面隐藏事件
+        window.addEventListener("visibilitychange", function () {
+            var state = document.hidden ? "用户离开了" : "用户回来了";
+            alert(state)
+        });
+
+        // 添加beforeunload事件
+        window.addEventListener('beforeunload', function (e) {
+            console.log('beforeunload')
+            var confirmationMessage = '确定离开此页吗？本页不需要刷新或后退1';
+            var event = (e || window.event)
+            event.returnValue = confirmationMessage;
+            return confirmationMessage;
+        }, false)
+
+    </script>
+</head>
+
+<body>
+
+</body>
+
+</html>
