@@ -63,54 +63,61 @@
     }
   </style>
 </head>
-<script src="http://s1.ljcdn.com/m-base/release/v03.1/asset/birdge_558d2ac98dc709w9.js"></script>
+<script src="//s1.ljcdn.com/m-base/release/v03.1/asset/birdge_558d2ac98dc709w9.js" crossorigin="anonymous"></script>
 
-<body></body>
-<div>
-  <button class="button--primary button--block" onclick="getStaticData()">getStaticData</button>
-</div>
-<div>
-  <button class="button--primary button--block" onclick="getAccessToken()">getAccessToken</button>
-</div>
-<div>
-  <button class="button--primary button--block" onclick="getUserInfo()">getUserInfo</button>
-</div>
-<script>
-  window.$ljBridge.ready(function (bridge, webStatus) {
-    window.$bridge = bridge
-    window.$webStatus = webStatus
-  });
+<script src="//cdn.jsdelivr.net/npm/eruda" onload="eruda.init()" async></script>
 
-  function getStaticData() {
-    if (window.$bridge) {
-      alert('getStaticData:' + JSON.stringify(window.$bridge.getStaticData()))
-    } else {
-      alert('loading...')
-      window.$ljBridge.ready(function (bridge, webStatus) {
+<body>
+  <div>
+    <button class="button--primary button--block" onclick="getStaticData()">getStaticData</button>
+  </div>
+  <div>
+    <button class="button--primary button--block" onclick="getAccessToken()">getAccessToken</button>
+  </div>
+  <div>
+    <button class="button--primary button--block" onclick="getUserInfo()">getUserInfo</button>
+  </div>
+  <script>
+    window.onerror = function (e) {
+      alert('error:', JSON.stringify(e))
+    }
+
+    window.$ljBridge.ready(function (bridge, webStatus) {
+      alert('ljBridge 注入成功')
+      window.$bridge = bridge
+      window.$webStatus = webStatus
+    });
+
+    function getStaticData() {
+      if (window.$bridge) {
         alert('getStaticData:' + JSON.stringify(window.$bridge.getStaticData()))
-      });
+      } else {
+        window.$ljBridge.ready(function (bridge, webStatus) {
+          alert('getStaticData:' + JSON.stringify(window.$bridge.getStaticData()))
+        });
+      }
     }
-  }
 
-  function getAccessToken() {
-    if (window.$bridge) {
-      alert('getAccessToken:' + JSON.stringify(window.$bridge.getAccessToken()))
-    } else {
-      window.$ljBridge.ready(function (bridge, webStatus) {
+    function getAccessToken() {
+      if (window.$bridge) {
         alert('getAccessToken:' + JSON.stringify(window.$bridge.getAccessToken()))
-      });
+      } else {
+        window.$ljBridge.ready(function (bridge, webStatus) {
+          alert('getAccessToken:' + JSON.stringify(window.$bridge.getAccessToken()))
+        });
+      }
     }
-  }
 
-  function getUserInfo() {
-    if (window.$bridge) {
-      alert('getUserInfo:' + JSON.stringify(window.$bridge.getUserInfo()))
-    } else {
-      window.$ljBridge.ready(function (bridge, webStatus) {
+    function getUserInfo() {
+      if (window.$bridge) {
         alert('getUserInfo:' + JSON.stringify(window.$bridge.getUserInfo()))
-      });
+      } else {
+        window.$ljBridge.ready(function (bridge, webStatus) {
+          alert('getUserInfo:' + JSON.stringify(window.$bridge.getUserInfo()))
+        });
+      }
     }
-  }
-</script>
+  </script>
+</body>
 
 </html>
