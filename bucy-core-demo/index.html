@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Link App 测试页面</title>
+  <style>
+    button {
+      line-height: 1.5;
+      display: inline-block;
+      font-weight: 400;
+      text-align: center;
+      -ms-touch-action: manipulation;
+      touch-action: manipulation;
+      cursor: pointer;
+      background-image: none;
+      border: 1px solid transparent;
+      white-space: nowrap;
+      padding: 0 15px;
+      font-size: 14px;
+      border-radius: 4px;
+      height: 36px;
+      -webkit-user-select: none;
+      -moz-user-select: none;
+      -ms-user-select: none;
+      user-select: none;
+      -webkit-transition: all 0.3s cubic-bezier(0.645, 0.045, 0.355, 1);
+      transition: all 0.3s cubic-bezier(0.645, 0.045, 0.355, 1);
+      position: relative;
+      -webkit-box-shadow: 0 2px 0 rgba(0, 0, 0, 0.015);
+      box-shadow: 0 2px 0 rgba(0, 0, 0, 0.015);
+      color: rgba(0, 0, 0, 0.65);
+      background-color: #fff;
+      border-color: #d9d9d9;
+    }
+
+    button:active,
+    button:focus {
+      outline: none;
+      box-shadow: none;
+    }
+
+    .button--primary {
+      color: #fff;
+      background-color: #1890ff;
+      border-color: #1890ff;
+      text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.12);
+      -webkit-box-shadow: 0 2px 0 rgba(0, 0, 0, 0.035);
+      box-shadow: 0 2px 0 rgba(0, 0, 0, 0.035);
+    }
+
+    .button--primary:active {
+      color: #fff;
+      background-color: #096dd9;
+      border-color: #096dd9;
+    }
+
+    .button--block {
+      width: 100%;
+      margin-top: 15px;
+    }
+  </style>
+</head>
+<script src="http://s1.ljcdn.com/m-base/release/v03.1/asset/birdge_558d2ac98dc709w9.js"></script>
+
+<body></body>
+<div>
+  <button class="button--primary button--block" onclick="getStaticData()">getStaticData</button>
+</div>
+<div>
+  <button class="button--primary button--block" onclick="getAccessToken()">getAccessToken</button>
+</div>
+<div>
+  <button class="button--primary button--block" onclick="getUserInfo()">getUserInfo</button>
+</div>
+<script>
+  window.$ljBridge.ready(function (bridge, webStatus) {
+    window.$bridge = bridge
+    window.$webStatus = webStatus
+  });
+
+  function getStaticData() {
+    if (window.$bridge) {
+      alert('getStaticData:' + JSON.stringify(window.$bridge.getStaticData()))
+    } else {
+      alert('loading...')
+      window.$ljBridge.ready(function (bridge, webStatus) {
+        alert('getStaticData:' + JSON.stringify(window.$bridge.getStaticData()))
+      });
+    }
+  }
+
+  function getAccessToken() {
+    if (window.$bridge) {
+      alert('getAccessToken:' + JSON.stringify(window.$bridge.getAccessToken()))
+    } else {
+      window.$ljBridge.ready(function (bridge, webStatus) {
+        alert('getAccessToken:' + JSON.stringify(window.$bridge.getAccessToken()))
+      });
+    }
+  }
+
+  function getUserInfo() {
+    if (window.$bridge) {
+      alert('getUserInfo:' + JSON.stringify(window.$bridge.getUserInfo()))
+    } else {
+      window.$ljBridge.ready(function (bridge, webStatus) {
+        alert('getUserInfo:' + JSON.stringify(window.$bridge.getUserInfo()))
+      });
+    }
+  }
+</script>
+
+</html>
